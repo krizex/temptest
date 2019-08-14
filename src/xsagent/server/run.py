@@ -1,17 +1,17 @@
 import os
 
-from xsagent.server.mq.connect import connect_mq
-
-
-QUEUE_CONNECT = 'connect'
-QUEUE_CMD_RESULT = 'command_result'
+from xsagent.mq.connect import connect_mq
+from xsagent import log
+from xsagent.queuename import QUEUE_CMD_RESULT, QUEUE_CONNECT
 
 
 def on_connect(channel, method, properties, body):
+    log.info('Receive connection from client on XS')
     pass
 
 
 def on_cmd_result(channel, method, properties, body):
+    log.info('Receive command result from client')
     pass
 
 

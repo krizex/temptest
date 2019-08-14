@@ -8,7 +8,7 @@ class Logger(object):
         root_logger.setLevel(lvl)
         self.logger = logging.getLogger(name)
         self.logger.setLevel(lvl)
-        formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)-8s - [Thread-%(threadName)s]: %(message)s", "%Y-%m-%d %H:%M:%S")
+        formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - [Thread-%(threadName)s]: %(message)s", "%Y-%m-%d %H:%M:%S")
 
         term_handler = logging.StreamHandler()
         term_handler.setFormatter(formatter)
