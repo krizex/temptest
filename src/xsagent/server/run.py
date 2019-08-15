@@ -4,7 +4,7 @@ import json
 from xsagent.mq.connect import connect_mq
 from xsagent import log
 from xsagent.queuename import QUEUE_CMD_RESULT, QUEUE_CONNECT
-from .agents import add_agent, Agent
+from .agents import add_agent, Agent, del_agent
 from .cmd.messages import set_response
 from .cmd.server import CommandServer
 
@@ -12,7 +12,13 @@ from .cmd.server import CommandServer
 def on_connect(channel, method, properties, body):
     log.info('Receive connection from client on XS')
     xs_info = json.loads(body)
-    add_agent(xs_info['routing-key'], Agent(xs_info['name'], xs_info['routing-key']))
+    tp = xs_info['type']
+    if tp == 'join':
+        add_agent(xs_info['routing-key'], Agent(xs_info['name'], xs_info['routing-key']))
+    elif tp == 'leave':
+        del_agent(xs_info['routing-key'])
+    else:
+        log.warning('Unknown connect message')
 
 
 def on_cmd_result(channel, method, properties, body):

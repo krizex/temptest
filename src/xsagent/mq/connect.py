@@ -2,7 +2,7 @@ import pika
 from xsagent import log
 
 
-def connect_mq(host, port, user, password, on_channel_open):
+def connect_mq(host, port, user, password, on_channel_open, on_close_callback=None):
     def on_open(connection):
         log.info('MQ connected')
         connection.channel(on_open_callback=on_channel_open)
@@ -12,8 +12,7 @@ def connect_mq(host, port, user, password, on_channel_open):
     connection = pika.SelectConnection(parameters=parameters, on_open_callback=on_open)
     try:
         connection.ioloop.start()
-    # Catch a Keyboard Interrupt to make sure that the connection is closed cleanly
-    except KeyboardInterrupt:
+    except:
         # Gracefully close the connection
         connection.close()
         # Start the IOLoop again so Pika can communicate, it will stop on its own when the connection is closed

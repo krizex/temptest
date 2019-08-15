@@ -7,7 +7,7 @@ CUR_DIR := $(shell pwd)
 APP_CONTAINER_NAME := $(SERVICE)
 APP_CONTAINER_HOST_NAME := $(SERVICE)
 MQ_CONTAINER_NAME := xs-mq
-MQ_PORT := 8003
+MQ_PORT := 1080
 
 .PHONY: build
 build:

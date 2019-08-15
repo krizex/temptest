@@ -1,8 +1,12 @@
 import os
 import json
+import signal
+import functools
+import sys
+import time
 
 from xsagent.mq.connect import connect_mq
-from .info import generate_xs_info
+from .info import xs_info
 from xsagent.queuename import EXCHANGE_CMD, QUEUE_CMD_RESULT, QUEUE_CONNECT
 from xsagent import log
 from .handlers import dispatch_cmd
@@ -17,9 +21,17 @@ def on_cmd(channel, method, properties, body):
 
 
 def register_client(channel):
-    xs_info = generate_xs_info()
-    channel.basic_publish(exchange='', routing_key=QUEUE_CONNECT, body=json.dumps(xs_info))
-    return xs_info['routing-key']
+    info = xs_info.copy()
+    info['type'] = 'join'
+    log.info('Registering the client, name=%s, routing-key=%s', info['name'], info['routing-key'])
+    channel.basic_publish(exchange='', routing_key=QUEUE_CONNECT, body=json.dumps(info))
+
+
+def deregister_client(channel):
+    info = xs_info.copy()
+    info['type'] = 'leave'
+    log.info('Deregistering the client, name=%s, routing-key=%s', info['name'], info['routing-key'])
+    channel.basic_publish(exchange='', routing_key=QUEUE_CONNECT, body=json.dumps(info))
 
 
 def create_command_receiver_queue(channel, routing_key):
@@ -35,19 +47,30 @@ def create_command_receiver_queue(channel, routing_key):
     channel.exchange_declare(EXCHANGE_CMD, callback=on_exchange_declare)
 
 
+def set_signal_handler(handle):
+    for sig in (signal.SIGTERM, signal.SIGINT, signal.SIGQUIT):
+        signal.signal(sig, handle)
+
+
 def on_channel_open(channel):
     channel.queue_declare(QUEUE_CONNECT)
     channel.queue_declare(QUEUE_CMD_RESULT)
-    routing_key = register_client(channel)
-    create_command_receiver_queue(channel, routing_key)
+    register_client(channel)
+    create_command_receiver_queue(channel, xs_info['routing-key'])
+    def sig_handler(signum, frame):
+        deregister_client(channel)
+        set_signal_handler(signal.SIG_DFL)
+        raise RuntimeError('Closing the client')
+
+    set_signal_handler(sig_handler)
 
 
-def main():
-    mq_user = os.getenv('RABBITMQ_DEFAULT_USER')
-    mq_password = os.getenv('RABBITMQ_DEFAULT_PASS')
-    host = '127.0.0.1'
-    port = 8003
-    connect_mq(host, port, mq_user, mq_password, on_channel_open)
+def main(host, port, user, password):
+    connect_mq(host, port, user, password, on_channel_open)
 
 if __name__ == '__main__':
-    main()
+    host = '10.157.11.32'
+    port = 1080
+    user = 'mq_user'
+    password = 'mq_password'
+    main(host, port, user, password)

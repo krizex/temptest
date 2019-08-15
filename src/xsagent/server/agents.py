@@ -16,14 +16,19 @@ def add_agent(routing_key, agent):
 
 
 def del_agent(routing_key):
-    log.info('Add agent %s', routing_key)
-    del __agents[routing_key]
+    if routing_key in __agents:
+        agent = __agents.pop(routing_key)
+        log.info('Del agent %s', agent)
+    else:
+        log.error('Agent %s already deleted', routing_key)
 
 
 def list_agents():
     return list(__agents.values())
 
 
+def agent_exists(routing_key):
+    return routing_key in __agents
 
 
 __agents = {}

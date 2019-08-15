@@ -23,9 +23,11 @@ class CommandServer(Thread):
     def aiohttp_server(self):
         app = web.Application(debug=True)
         app.add_routes([
-            web.get('/hello', partial(routers.hello, self.channel)),
-            web.get('/servers', routers.servers),
+            web.get('/servers', partial(routers.servers, self.channel)),
+            web.get('/server', partial(routers.server, self.channel)),
             web.get('/vms', partial(routers.vms_of_server, self.channel)),
-            web.post('/vm/start', partial(routers.servers, self.channel)),
+            web.get('/vm', partial(routers.vm, self.channel)),
+            web.post('/vm/start', partial(routers.start_vm, self.channel)),
+            web.post('/vm/shutdown', partial(routers.shutdown_vm, self.channel)),
         ])
         return app.make_handler()
