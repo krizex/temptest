@@ -42,7 +42,7 @@ def on_channel_open(channel):
 
 # FIXME
 def wait_until_mq_ready(host, port):
-    time.sleep(5)
+    time.sleep(30)
     return
 
     for _ in range(30):
