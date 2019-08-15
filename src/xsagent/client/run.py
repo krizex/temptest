@@ -5,12 +5,15 @@ from xsagent.mq.connect import connect_mq
 from .info import generate_xs_info
 from xsagent.queuename import EXCHANGE_CMD, QUEUE_CMD_RESULT, QUEUE_CONNECT
 from xsagent import log
+from .handlers import dispatch_cmd
 
 
 def on_cmd(channel, method, properties, body):
     log.info('Receive command from server')
-    # channel.basic_publish(exchange='', routing_key=QUEUE_CMD_RESULT, body='CMD result')
-    pass
+    js = json.loads(body)
+    result = dispatch_cmd(js)
+    result.msgid = js['msgid']
+    channel.basic_publish(exchange='', routing_key=QUEUE_CMD_RESULT, body=json.dumps(result.__dict__))
 
 
 def register_client(channel):
@@ -37,7 +40,6 @@ def on_channel_open(channel):
     channel.queue_declare(QUEUE_CMD_RESULT)
     routing_key = register_client(channel)
     create_command_receiver_queue(channel, routing_key)
-    # FIXME: setup command receiver thread
 
 
 def main():
