@@ -32,6 +32,7 @@ async def request_agent(channel, routing_key, cmd):
 
 async def servers(channel, req):
     pools = {}
+    agents = list_agents()
     for agent in agents:
         cmd = {
             'type': 'server',
@@ -45,11 +46,10 @@ async def servers(channel, req):
             pools[pool_uuid] = []
         pools[pool_uuid].append(agent.__dict__)
 
-    ret = {
+    js = {
         'error_code': 0,
         'result': pools
     }
-    js = json.dumps(ret)
     return web.json_response(js)
 
 

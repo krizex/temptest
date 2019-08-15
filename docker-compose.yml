@@ -1,0 +1,29 @@
+version: '3'
+services:
+  xs-mq:
+    image: rabbitmq:latest
+    container_name: xs-mq
+    env_file: mq.env
+    ports:
+      - "1080:5672"
+    networks:
+      - frontend
+
+  xs-agent:
+    image: krizex/xs-agent:latest
+    container_name: xs-agent
+    env_file: mq.env
+    networks:
+      - frontend
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+    ports:
+      - "8002:8000"
+    depends_on:
+      - xs-mq
+  
+
+
+networks:
+  frontend:
+    driver: bridge

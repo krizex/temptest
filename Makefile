@@ -29,17 +29,10 @@ debug:
 .PHONY: run stop restart attach
 
 run:
-	docker run --rm -d \
-	--hostname $(APP_CONTAINER_HOST_NAME) \
-	--name $(APP_CONTAINER_NAME) \
-	-p $(HOST_PORT):$(CONTAINER_PORT) \
-	$(IMAGE_LABEL):latest
-
-attach:
-	docker exec -it $(APP_CONTAINER_NAME) /bin/bash
+	docker-compose up -d
 
 stop:
-	docker stop $(APP_CONTAINER_NAME)
+	docker-compose down
 
 restart: stop run
 

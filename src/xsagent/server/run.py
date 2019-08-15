@@ -1,5 +1,7 @@
 import os
 import json
+import socket
+import time
 
 from xsagent.mq.connect import connect_mq
 from xsagent import log
@@ -38,11 +40,32 @@ def on_channel_open(channel):
     CommandServer(channel).start()
 
 
+# FIXME
+def wait_until_mq_ready(host, port):
+    time.sleep(5)
+    return
+
+    for _ in range(30):
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s.settimeout(1)
+        try:
+            log.info('Connecting %s:%d', host, port)
+            s.connect((host, port))
+            resp.shutdown()
+            return
+        except:
+            pass
+
+    raise RuntimeError('Unable to connect MQ')
+
+
+
 def main():
     mq_user = os.getenv('RABBITMQ_DEFAULT_USER')
     mq_password = os.getenv('RABBITMQ_DEFAULT_PASS')
     host = 'xs-mq'
     port = 5672
+    wait_until_mq_ready(host, port)
     connect_mq(host, port, mq_user, mq_password, on_channel_open)
 
 if __name__ == '__main__':
