@@ -69,7 +69,7 @@ async def server(channel, req):
 # server=xxx&vm=yyy
 async def vm(channel, req):
     routing_key = req.query.get('server')
-    vm_uuid = req.quer.get('vm')
+    vm_uuid = req.query.get('vm')
     cmd = {
         'type': 'vm',
         'operation': 'params',
@@ -121,7 +121,7 @@ async def shutdown_vm(channel, req):
     vm_uuid = js['vm']
     cmd = {
         'type': 'vm',
-        'operation': 'stop',
+        'operation': 'shutdown',
         'vm_uuid': vm_uuid,
     }
 

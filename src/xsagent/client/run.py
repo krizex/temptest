@@ -69,8 +69,9 @@ def main(host, port, user, password):
     connect_mq(host, port, user, password, on_channel_open)
 
 if __name__ == '__main__':
-    host = '10.157.11.32'
-    port = 1080
+    host = os.getenv('SERVER_IP', '10.157.11.32')
+    port = os.getenv('SERVER_PORT', '1080')
+    port = int(port)
     user = 'mq_user'
     password = 'mq_password'
     main(host, port, user, password)

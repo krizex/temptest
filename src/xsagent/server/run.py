@@ -27,7 +27,7 @@ def on_cmd_result(channel, method, properties, body):
     js = json.loads(body)
     if 'msgid' not in js:
         raise RuntimeError('Incorrect CMD result. Reesult = {}'.format(js))
-    msgid = js['msgid']
+    msgid = js.pop('msgid')
     log.info('Receive command result from client, msgid = %d', msgid)
     set_response(msgid, js)
 

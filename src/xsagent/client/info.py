@@ -14,7 +14,7 @@ def host_uuid():
 def __generate_xs_info():
     return {
         'name': os.uname()[1],
-        'routing-key': generate_routing_key(),
+        'routing-key': host_uuid(),
         'uuid': host_uuid(),
     }
 

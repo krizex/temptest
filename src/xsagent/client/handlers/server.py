@@ -26,13 +26,15 @@ def list_vms(state):
         for vm in all_vms:
             is_template = s.xenapi.VM.get_is_a_template(vm)
             if not is_template:
-                host = s.xenapi.VM.get_resident_on(vm)
-                host_uuid = s.xenapi.host.get_uuid(host)
-                if host_uuid != xs_info['uuid']:
-                    continue
                 power_state = s.xenapi.VM.get_power_state(vm)
                 if state is not None and power_state != state:
                     continue
+
+                host = s.xenapi.VM.get_resident_on(vm)
+                if host != 'OpaqueRef:NULL':
+                    host_uuid = s.xenapi.host.get_uuid(host)
+                    if host_uuid != xs_info['uuid']:
+                        continue
                 uuid = s.xenapi.VM.get_uuid(vm)
                 vms.append(uuid)
 
