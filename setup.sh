@@ -15,6 +15,7 @@ install_client ()
 
 run_client ()
 {
+    cat ./xs-agent/server.env
     source ./xs-agent/server.env
     export PYTHONPATH="$(pwd)/xs-agent/src"
     exec python -m xsagent.client.run
