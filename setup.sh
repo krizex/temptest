@@ -11,6 +11,7 @@ install_client ()
 {
     echo "install client"
     rsync -avzp --delete qy@10.157.11.32:/home/qy/dev/xs-agent ./
+    pip install -r ./xs-agent/src/client-requirements.txt
 }
 
 run_client ()
