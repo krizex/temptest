@@ -10,7 +10,7 @@ print_help ()
 install_client ()
 {
     echo "install client"
-    rsync -avzp --delete qy@10.157.11.32:/home/qy/dev/xs-agent ./xs-agent
+    rsync -avzp --delete qy@10.157.11.32:/home/qy/dev/xs-agent ./
 }
 
 run_client ()
