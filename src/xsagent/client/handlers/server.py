@@ -60,6 +60,9 @@ def params():
         metrics = s.xenapi.host.get_metrics(host)
         metrics_record = s.xenapi.host_metrics.get_record(metrics)
 
+        # make it serializble
+        metrics_record['last_updated'] = str(metrics_record['last_updated'])
+
 
         result = {
             'UUID': host_uuid,
