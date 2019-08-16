@@ -56,9 +56,16 @@ def params():
         host_uuid = xs_info['uuid']
         host = s.xenapi.host.get_by_uuid(host_uuid)
         name_label = s.xenapi.host.get_name_label(host)
+        description = s.xenapi.host.get_name_description(host)
+        metrics = s.xenapi.host.get_metrics(host)
+        metrics_record = s.xenapi.host_metrics.get_record(metrics)
+
 
         result = {
+            'UUID': host_uuid,
             'name_label': name_label,
+            'description': description,
+            'metrics': metrics_record,
         }
 
     return Result(0, result)

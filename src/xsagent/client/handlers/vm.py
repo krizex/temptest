@@ -47,9 +47,17 @@ def params(vm_uuid):
     with connection() as s:
         vm = s.xenapi.VM.get_by_uuid(vm_uuid)
         name_label = s.xenapi.VM.get_name_label(vm)
+        description = s.xenapi.VM.get_name_description(vm)
+        power_state = s.xenapi.VM.get_power_state(vm)
+        metrics = s.xenapi.VM.get_guest_metrics(vm)
+        metrics_record = s.xenapi.VM_guest_metrics.get_record(metrics)
 
         result = {
+            'UUID': vm_uuid,
             'name_label': name_label,
+            'description': description,
+            'power_state': power_state,
+            'metrics': metrics_record,
         }
 
     return Result(0, result)
